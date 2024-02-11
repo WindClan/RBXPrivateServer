@@ -1,0 +1,28 @@
+# Python 3 server example
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from serverclass import *
+import time
+import ssl
+import os
+serverPort = 80
+def run(hostName="localhost",isHttps=False,password=""):
+    if not os.path.isdir("assetcache"):
+        os.mkdir("assetcache")
+    if isHttps:
+        serverPort = 443
+    else:
+        serverPort = 80
+
+    webServer = ThreadingHTTPServer((hostName, serverPort), base)
+    if isHttps:
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        context.load_cert_chain(certfile='./cert.pem', keyfile="./key.pem", password=password)
+        webServer.socket = context.wrap_socket(webServer.socket, server_side=True)
+    print("Server started http://%s:%s" % (hostName, serverPort))
+    webServer.serve_forever()
+
+    webServer.server_close()
+    print("Server stopped.")
+
+if __name__ == "__main__":
+    run()
