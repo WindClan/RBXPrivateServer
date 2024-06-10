@@ -1,0 +1,1 @@
+To replace the certs in Roblox, use a hex editor and search for "BGIAA" and replace that entire Base64 encoded string with the PublicKey blob

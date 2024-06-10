@@ -1,3 +1,5 @@
-*.pem
 assetcache/*
 __pycache__/*
+*.pem
+certs/PrivateKeyBlob.txt
+certs/PublicKeyBlob.txt

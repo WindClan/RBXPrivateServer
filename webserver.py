@@ -16,7 +16,7 @@ def run(hostName="localhost",isHttps=False,password=""):
     webServer = ThreadingHTTPServer((hostName, serverPort), base)
     if isHttps:
         context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-        context.load_cert_chain(certfile='./cert.pem', keyfile="./key.pem", password=password)
+        context.load_cert_chain(certfile='./certs/httpscert.pem', keyfile="./certs/httpskey.pem", password=password)
         webServer.socket = context.wrap_socket(webServer.socket, server_side=True)
     print("Server started http://%s:%s" % (hostName, serverPort))
     webServer.serve_forever()
