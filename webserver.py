@@ -3,15 +3,14 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from serverclass import *
 import time
 import ssl
+import wget
 import os
-serverPort = 80
-def run(hostName="localhost",isHttps=False,password=""):
-    if not os.path.isdir("assetcache"):
-        os.mkdir("assetcache")
-    if isHttps:
-        serverPort = 443
-    else:
-        serverPort = 80
+def run(hostName="localhost",isHttps=False,password="",serverPort=0):
+    if serverPort == 0:
+        if isHttps:
+            serverPort = 443
+        else:
+            serverPort = 80
 
     webServer = ThreadingHTTPServer((hostName, serverPort), base)
     if isHttps:
