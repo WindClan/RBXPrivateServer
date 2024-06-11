@@ -6,25 +6,23 @@ class base(BaseHTTPRequestHandler):
     def do_GET(self):
         #print(self.headers)
         url = urlparse(self.path)
-        if url.path.lower() == "/favicon.ico":
+        url1 = url.path
+        if url1 == "/":
+            url1 = "/index.html"
+        if url1.lower() == "/favicon.ico":
             rbxapi.dynamic(self,"../cache/favicon.ico")
-        elif url.path.lower() == "/asset/getscriptstate.ashx":
+        elif url1.lower() == "/asset/getscriptstate.ashx":
             self.send_response(200)
             self.end_headers()
-        elif len(url.path) > 5 and url.path[0:6].lower() == "/asset":
+        elif url1.lower() == "/game/logout.aspx":
+            self.send_response(200)
+            self.end_headers()
+        elif os.path.exists("webcontent/"+url1.lower().split("&")[0].replace(".","_")+".py"):
+            rbxapi.scriptedGet(self,url.path)
+        elif len(url1) > 5 and url1[0:6].lower() == "/asset":
             assetId = url.query
             rbxapi.asset(self,assetId)
-#        elif url.path.lower() == "/game/getcurrentuser.ashx":
-#            rbxapi.authenticated(self)
-        elif url.path.lower() == "/game/logout.aspx":
-            self.send_response(200)
-            self.end_headers()
-        elif url.path.lower() == "/game/keepalivepinger.ashx":
-            self.send_response(200)
-            self.end_headers()
-        elif os.path.exists("webcontent/"+url.path.lower().split("&")[0].replace(".","_")+".py"):
-            rbxapi.scriptedGet(self,url.path)
-        elif len(url.path) > 5 and url.path[0:6].lower() == "/game/":
+        elif len(url1) > 5 and url1[0:6].lower() == "/game/":
             assetId = url.path[6:len(url.path)]
             rbxapi.script(self,assetId)
         else:

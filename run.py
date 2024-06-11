@@ -1,3 +1,4 @@
+from OpenSSL import crypto
 import threading
 import webserver
 import configparser
@@ -16,8 +17,7 @@ if config['DEFAULT'] == None:
                      'old-style-hash': 'no'
                      }
     with open('settings.ini', 'w') as configfile:
-        config.write(configfile)
-
+        config.write(configfile)    
 
 def startServers():
     if not os.path.isdir("cache"):
@@ -27,7 +27,7 @@ def startServers():
     if not os.path.exists("cache/favicon.ico"):
         wget.download("http://www.roblox.com/favicon.ico",out="cache/favicon.ico")
     threading.Thread(target=webserver.run,args=(config['DEFAULT']['hostname'],False,config['DEFAULT']['password'],int(config['DEFAULT']['http-port']))).start()
-    if bool(config['DEFAULT']['enable-https']):
+    if config['DEFAULT']['enable-https'] == 'yes':
         threading.Thread(target=webserver.run,args=(config['DEFAULT']['hostname'],True,config['DEFAULT']['password'],int(config['DEFAULT']['https-port']))).start()
 if __name__ == "__main__":
     startServers()
