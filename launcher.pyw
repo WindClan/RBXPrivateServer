@@ -1,10 +1,14 @@
+# RBXPrivateServer was made by NotBronwyn
+
 import tkinter as tk
+from random import randint
 import runServer
 import subprocess
 from tkinter.filedialog import askopenfilename
 clientExec = "client/RobloxApp.exe"
 frame = None
 selected = None
+userId = randint(-9999,-1)
 selectedMap = ""
 def mainWindow():
     global frame; frame = tk.Tk() 
@@ -39,7 +43,7 @@ def solo():
     def start():
         if selectedMap != None:
             frame; frame.destroy()
-            runClient('-script "loadfile(\'http://localhost/game/visit.ashx\')()" "'+selectedMap.replace("/","\\")+'"')
+            runClient('-script "loadfile(\'http://localhost/game/visit.ashx\')('+str(userId)+')" "'+selectedMap.replace("/","\\")+'"')
     frame = tk.Tk() 
     frame.title("RBXPrivateServer - Play solo") 
     frame.geometry('400x200')
@@ -106,7 +110,7 @@ def client():
         ip = ipinput.get(1.0, "end-1c")
         port = portinput.get(1.0, "end-1c")
         frame.destroy()
-        runClient('-script "loadfile(\'http://localhost/game/join.ashx\')(nil,\''+ip+'\','+port+')"')
+        runClient('-script "loadfile(\'http://localhost/game/join.ashx\')(nil,\''+ip+'\','+port+','+str(userId)+')"')
     startButton = tk.Button(frame, 
                 text = "Start",  
                 command = start)
@@ -116,7 +120,7 @@ def studio():
     frame.destroy()
     runClient()
 
-
-runServer.startServers()
-mainWindow()
+if __name__ == "__main__":
+    runServer.startServers()
+    mainWindow()
 
