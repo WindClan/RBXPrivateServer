@@ -106,10 +106,10 @@ def dynamic(req,name):
         req.send_response(404)
         req.end_headers()
 def scriptedGet(req,name):
-    name = name.split("&")[0]
-    if name == "/":
-        name = "/index.html"
-    module = "webcontent"+name.replace(".","_").replace("/",".").lower()
+    name1 = name.path.split("&")[0]
+    if name1 == "/":
+        name1 = "/index.html"
+    module = "webcontent"+name1.replace(".","_").replace("/",".").lower()
     print(module)
     a = importlib.import_module(module)
     a.serveGet(req,name,config)

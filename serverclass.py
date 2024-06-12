@@ -15,7 +15,7 @@ class base(BaseHTTPRequestHandler):
             self.send_response(200)
             self.end_headers()
         elif os.path.exists("webcontent/"+url1.lower().split("&")[0].replace(".","_")+".py"):
-            rbxapi.scriptedGet(self,url.path)
+            rbxapi.scriptedGet(self,url)
         elif len(url1) > 5 and url1[0:6].lower() == "/asset":
             assetId = url.query
             rbxapi.asset(self,assetId)

@@ -67,7 +67,7 @@ function reportDuration(category, result, duration, blocking,errorType)
 	pcall(function() game:HttpGet("http://localhost/Game/JoinRate.ashx?st=0&i=0&p=-1&c=" .. category .. "&r=" .. result .. "&d=" .. (math.floor(duration*1000)) .. "&b=" .. bytesReceived .. "&ip=localhost&errorType=" .. errorType .. "&platform=" .. platform, blocking) end)
 end
 -- arguments ---------------------------------------
-local threadSleepTime,ip,port = ...
+local threadSleepTime,ip,port,userId = ...
 
 if threadSleepTime==nil then
 	threadSleepTime = 15
@@ -77,6 +77,9 @@ if ip==nil then
 end
 if port==nil then
 	port=53640
+end
+if userId == nil then
+	userId = 0
 end
 
 local test = true
@@ -104,7 +107,7 @@ local closeConnection = game.Close:connect(function()
 			reportDuration("GameDuration","Success", duration, true)
 		end
 		pcall(function() game:HttpGet("&disconnect=true", true) end)
-		if true then pcall(function() game:HttpPost("http://api.localhost/auth/invalidate", "invalidate") end) end
+		if true then pcall(function() game:HttpPost("http://localhost/auth/invalidate", "invalidate") end) end
 	end
 end)
 
@@ -122,8 +125,8 @@ pcall(function() game:GetService("SocialService"):SetGroupUrl("http://localhost/
 pcall(function() game:GetService("SocialService"):SetGroupRankUrl("http://localhost/Game/LuaWebService/HandleSocialRequest.ashx?method=GetGroupRank&playerid=%d&groupid=%d") end)
 pcall(function() game:GetService("SocialService"):SetGroupRoleUrl("http://localhost/Game/LuaWebService/HandleSocialRequest.ashx?method=GetGroupRole&playerid=%d&groupid=%d") end)
 pcall(function() game:GetService("GamePassService"):SetPlayerHasPassUrl("http://localhost/Game/GamePass/GamePassHandler.ashx?Action=HasPass&UserID=%d&PassID=%d") end)
-pcall(function() game:GetService("MarketplaceService"):SetProductInfoUrl("http://api.localhost/marketplace/productinfo?assetId=%d") end)
-pcall(function() game:GetService("MarketplaceService"):SetPlayerOwnsAssetUrl("http://api.localhost/ownership/hasasset?userId=%d&assetId=%d") end)
+pcall(function() game:GetService("MarketplaceService"):SetProductInfoUrl("http://localhost/marketplace/productinfo?assetId=%d") end)
+pcall(function() game:GetService("MarketplaceService"):SetPlayerOwnsAssetUrl("http://localhost/ownership/hasasset?userId=%d&assetId=%d") end)
 pcall(function() game:SetCreatorID(0, Enum.CreatorType.User) end)
 
 -- Bubble chat.  This is all-encapsulated to allow us to turn it off with a config setting
@@ -188,7 +191,7 @@ end
 
 function registerPlay(key)
 	if true and game:GetService("CookiesService"):GetCookieValue(key) == "" then
-		game:GetService("CookiesService"):SetCookieValue(key, "{ \"userId\" : 0, \"placeId\" : -1, \"os\" : \"" .. settings().Diagnostics.OsPlatform .. "\" }")
+		game:GetService("CookiesService"):SetCookieValue(key, "{ \"userId\" : "..userId..", \"placeId\" : -1, \"os\" : \"" .. settings().Diagnostics.OsPlatform .. "\" }")
 	end
 end
 
@@ -222,7 +225,7 @@ function onDisconnection(peer, lostConnection)
 		showErrorWindow("This game has shut down", "Kick", "Kick")
 	end
 	pcall(function() game:HttpGet("&disconnect=true", true) end)
-	if true then pcall(function() game:HttpPost("http://api.localhost/auth/invalidate", "invalidate") end) end
+	if true then pcall(function() game:HttpPost("http://localhost/auth/invalidate", "invalidate") end) end
 end
 
 function requestCharacter(replicator)
@@ -352,16 +355,20 @@ local success, err = pcall(function()
 	connectionFailed = client.ConnectionFailed:connect(onConnectionFailed)
 	client.Ticket = ""	
 	ifSeleniumThenSetCookie("SeleniumTest2", "Successfully connected to server")
-	
-	playerConnectSucces, player = pcall(function() return client:PlayerConnect(0, ip, port, 0, threadSleepTime) end)
-	if not playerConnectSucces then
+	oldUserId = userId
+	userId = 0
+	playerConnectSucces, player = pcall(function() return client:PlayerConnect(userId, ip, port, 0, threadSleepTime) end)
+	if not playerConnectSucces and not client.PlayerConnect then
 		--Old player connection scheme
-		player = game:GetService("Players"):CreateLocalPlayer(0)
+		player = game:GetService("Players"):CreateLocalPlayer(userId)
 		analytics("Created Player")
 		client:Connect(ip, port, 0, threadSleepTime)
+	elseif not playerConnectSucces then
+		game:SetMessage(player)
 	else
 		analytics("Created Player")
 	end
+	userId = oldUserId
 	pcall(function()
 		registerPlay("rbx_evt_ftp")
 		delay(60*5, function() registerPlay("rbx_evt_fmp") end)
@@ -369,32 +376,14 @@ local success, err = pcall(function()
 
 	-- negotiate an auth token
 	if true then
-		pcall(function() game:HttpPost("http://api.localhost/auth/negotiate?ticket=", "negotiate") end)
+		pcall(function() game:HttpPost("http://localhost/auth/negotiate?ticket=", "negotiate") end)
 		delay(300, function()
 			while true do
-				pcall(function() game:HttpPost("http://api.localhost/auth/renew", "renew") end)
+				pcall(function() game:HttpPost("http://localhost/auth/renew", "renew") end)
 				wait(300)
 			end
 		end)
 	end
-	player.Changed:connect(
-	function (property)
-		if property=="Character" then
-			if player.Character then
-					local char = player.Character
-					char["Left Arm"].BrickColor = BrickColor.new("Really black")
-					char["Right Arm"].BrickColor = BrickColor.new("Really black")
-					char["Left Leg"].BrickColor = BrickColor.new("Really black")
-					char["Right Leg"].BrickColor = BrickColor.new("Really black")
-					char["Torso"].BrickColor = BrickColor.new("Dark stone grey")
-					char["Head"].BrickColor = BrickColor.new("Institutional white")
-					local shirt = Instance.new("Shirt",char)
-					shirt.ShirtTemplate = "http://localhost/asset/?id=8561740"
-					local humanoid = waitForChild(player.Character, "Humanoid")
-				end
-			end
-		end
-	)
 	player:SetSuperSafeChat(false)
 	pcall(function() player:SetUnder13(false) end)
 	pcall(function() player:SetMembershipType(Enum.MembershipType.OBC) end)
@@ -404,8 +393,9 @@ local success, err = pcall(function()
 	-- Overriden
 	onPlayerAdded(player)
 	
-	pcall(function() player.Name = [========[Player]========] end)
-	player.CharacterAppearance = ""	
+	pcall(function() player.Name = "Player"..tostring(0-userId) end)
+	--player.CharacterAppearance = "http://localhost/asset/BodyColors.ashx?userId="..userId..";http://localhost/asset?id=8561741"	
+	player.CharacterAppearance = "http://localhost/Asset/CharacterFetch.ashx?userId="..userId
 	if not test then visit:SetUploadUrl("")end
 	
 	analytics("Connect Client")

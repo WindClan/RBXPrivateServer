@@ -1,5 +1,10 @@
 local placeId, port, sleeptime, access, url, killID, deathID, timeout, autosaveInterval, locationID, groupBuild, machineAddress, gsmInterval, gsmUrl, maxPlayers, maxSlotsUpperLimit, maxSlotsLowerLimit, gsmAccess, injectScriptAssetID, servicesUrl, permissionsServiceUrl, apiKey, libraryRegistrationScriptAssetID = ...
 servicesUrl = "http://localhost"
+url1 = servicesUrl
+access1 = tostring(math.random(1,200))
+killID1 = tostring(math.random(1,200))
+deathID1 = tostring(math.random(1,200))
+
 url = nil
 access = nil
 killID = nil
@@ -137,7 +142,10 @@ if url~=nil then
 			end)
 end
 
-pcall(function() game:GetService("NetworkServer"):SetIsPlayerAuthenticationRequired(true) end)
+
+
+
+pcall(function() ns:SetIsPlayerAuthenticationRequired(true) end)
 settings().Diagnostics.LuaRamLimit = 0
 --settings().Network:SetThroughputSensitivity(0.08, 0.01)
 --settings().Network.SendRate = 35
@@ -167,29 +175,15 @@ end]]
 
 game:GetService("Players").PlayerAdded:connect(function(player)
 	print("Player " .. player.userId .. " added")
-	
-	if url and access and placeId and player and player.userId then
-		game:HttpGet(url .. "/Game/ClientPresence.ashx?action=connect&" .. access .. "&PlaceID=" .. placeId .. "&UserID=" .. player.userId)
-		game:HttpGet(url .. "/Game/PlaceVisit.ashx?UserID=" .. player.userId .. "&AssociatedPlaceID=" .. placeId .. "&" .. access)
-	end
-	player.Changed:connect(
-		function (property)
-			if property=="Character" then
-				if player.Character then
-					local char = player.Character
-					char["Left Arm"].BrickColor = BrickColor.new("Really black")
-					char["Right Arm"].BrickColor = BrickColor.new("Really black")
-					char["Left Leg"].BrickColor = BrickColor.new("Really black")
-					char["Right Leg"].BrickColor = BrickColor.new("Really black")
-					char["Torso"].BrickColor = BrickColor.new("Dark stone grey")
-					char["Head"].BrickColor = BrickColor.new("Institutional white")
-					local shirt = Instance.new("Shirt",char)
-					shirt.ShirtTemplate = "http://localhost/asset/?id=8561740"
-					local humanoid = waitForChild(player.Character, "Humanoid")
-				end
-			end
+	for _,v in pairs(ns:children()) do
+		if v.Name ~= ":3" then
+			v.Name = ":3"
 		end
-	)
+	end
+	if url1 and access1 and placeId and player and player.userId then
+		--game:HttpGet(url1 .. "/Game/ClientPresence.ashx?action=connect&" .. access1 .. "&PlaceID=" .. placeId .. "&UserID=" .. player.userId)
+		--game:HttpGet(url1 .. "/Game/PlaceVisit.ashx?UserID=" .. player.userId .. "&AssociatedPlaceID=" .. placeId .. "&" .. access1)
+	end
 end)
 
 
@@ -243,3 +237,8 @@ end)
 if not success then
 	game:SetMessage(response)
 end
+
+
+--ignore this
+game:GetService("InsertService"):SetAssetUrl(url1 .. "/Asset/?id=%d")
+game:GetService("InsertService"):SetAssetVersionUrl(url1 .. "/Asset/?assetversionid=%d")
