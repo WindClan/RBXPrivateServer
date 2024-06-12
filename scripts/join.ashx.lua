@@ -5,6 +5,9 @@ function onPlayerAdded(player)
 end
 
 
+delay(0,function()
+	loadfile("http://localhost/game/corescripts.ashx")()
+end)
 
 -- MultiplayerSharedScript.lua inserted here ------ Prepended to GroupBuild.lua and Join.lua --
 
@@ -64,10 +67,16 @@ function reportDuration(category, result, duration, blocking,errorType)
 	pcall(function() game:HttpGet("http://localhost/Game/JoinRate.ashx?st=0&i=0&p=-1&c=" .. category .. "&r=" .. result .. "&d=" .. (math.floor(duration*1000)) .. "&b=" .. bytesReceived .. "&ip=localhost&errorType=" .. errorType .. "&platform=" .. platform, blocking) end)
 end
 -- arguments ---------------------------------------
-local threadSleepTime = ...
+local threadSleepTime,ip,port = ...
 
 if threadSleepTime==nil then
 	threadSleepTime = 15
+end
+if ip==nil then
+	ip = "localhost"
+end
+if port==nil then
+	port=53640
 end
 
 local test = true
@@ -118,7 +127,7 @@ pcall(function() game:GetService("MarketplaceService"):SetPlayerOwnsAssetUrl("ht
 pcall(function() game:SetCreatorID(0, Enum.CreatorType.User) end)
 
 -- Bubble chat.  This is all-encapsulated to allow us to turn it off with a config setting
-pcall(function() game:GetService("Players"):SetChatStyle(Enum.ChatStyle.Classic) end)
+pcall(function() game:GetService("Players"):SetChatStyle(Enum.ChatStyle.ClassicAndBubble) end)
 
 local waitingForCharacter = false
 local waitingForCharacterGuid = "26c3de03-3381-4ab6-8e60-e415fa757eba";
@@ -344,16 +353,15 @@ local success, err = pcall(function()
 	client.Ticket = ""	
 	ifSeleniumThenSetCookie("SeleniumTest2", "Successfully connected to server")
 	
-	playerConnectSucces, player = pcall(function() return client:PlayerConnect(0, "localhost", 53640, 0, threadSleepTime) end)
+	playerConnectSucces, player = pcall(function() return client:PlayerConnect(0, ip, port, 0, threadSleepTime) end)
 	if not playerConnectSucces then
 		--Old player connection scheme
 		player = game:GetService("Players"):CreateLocalPlayer(0)
 		analytics("Created Player")
-		client:Connect("localhost", 53640, 0, threadSleepTime)
+		client:Connect(ip, port, 0, threadSleepTime)
 	else
 		analytics("Created Player")
 	end
-
 	pcall(function()
 		registerPlay("rbx_evt_ftp")
 		delay(60*5, function() registerPlay("rbx_evt_fmp") end)
@@ -369,13 +377,30 @@ local success, err = pcall(function()
 			end
 		end)
 	end
-
-	player:SetSuperSafeChat(true)
-	pcall(function() player:SetUnder13(true) end)
-	pcall(function() player:SetMembershipType(Enum.MembershipType.None) end)
-	pcall(function() player:SetAccountAge(0) end)
+	player.Changed:connect(
+	function (property)
+		if property=="Character" then
+			if player.Character then
+					local char = player.Character
+					char["Left Arm"].BrickColor = BrickColor.new("Really black")
+					char["Right Arm"].BrickColor = BrickColor.new("Really black")
+					char["Left Leg"].BrickColor = BrickColor.new("Really black")
+					char["Right Leg"].BrickColor = BrickColor.new("Really black")
+					char["Torso"].BrickColor = BrickColor.new("Dark stone grey")
+					char["Head"].BrickColor = BrickColor.new("Institutional white")
+					local shirt = Instance.new("Shirt",char)
+					shirt.ShirtTemplate = "http://localhost/asset/?id=8561740"
+					local humanoid = waitForChild(player.Character, "Humanoid")
+				end
+			end
+		end
+	)
+	player:SetSuperSafeChat(false)
+	pcall(function() player:SetUnder13(false) end)
+	pcall(function() player:SetMembershipType(Enum.MembershipType.OBC) end)
+	pcall(function() player:SetAccountAge(69420) end)
 	player.Idled:connect(onPlayerIdled)
-	
+
 	-- Overriden
 	onPlayerAdded(player)
 	

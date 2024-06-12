@@ -15,12 +15,18 @@ start = contents.find(b'BgIAA')
 if start != -1:
     a.seek(start)
     a.write(blob)
-#Trustcheck URL
+#Trustcheck URL 1 
 a.seek(0)
 start = contents.find(b'\x00roblox.com\x00')
 if start != -1:
     a.seek(start)
     a.write(b'\x00localhost\x00\x00')
+#Trustcheck URL 2
+a.seek(0)
+start = contents.find(b'\x00roblox.com/\x00')
+if start != -1:
+    a.seek(start)
+    a.write(b'\x00localhost/\x00\x00')
 #Misc instance of URL
 a.seek(0)
 start = contents.find(b'\x2Eroblox.com\x00')
@@ -45,6 +51,25 @@ start = contents.find(b'http://www.roblox.com/asset?id=')
 if start != -1:
     a.seek(start)
     a.write(b'http://localhost/asset?id=\x00\x00\x00\x00\x00')
+#Asset URL 4
+a.seek(0)
+start = contents.find(b'\x00roblox.com//asset/\x00')
+if start != -1:
+    a.seek(start)
+    a.write(b'\x00localhost//asset/\x00\x00')
+#Asset URL 5
+a.seek(0)
+start = contents.find(b'\x00roblox.com/asset/\x00')
+if start != -1:
+    a.seek(start)
+    a.write(b'\x00localhost/asset/\x00\x00')
+#
+#API URL
+a.seek(0)
+start = contents.find(b'https://%sapi.roblox.com/%s/?apiKey=%s')
+if start != -1:
+    a.seek(start)
+    a.write(b'https://%sapi.localhost/%s/?apiKey=%s\x00')
 a.close()
 print("This does not patch some of the major issues")
 print("You also still need to edit AppSettings.xml")

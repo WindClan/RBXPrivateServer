@@ -11,9 +11,6 @@ class base(BaseHTTPRequestHandler):
             url1 = "/index.html"
         if url1.lower() == "/favicon.ico":
             rbxapi.dynamic(self,"../cache/favicon.ico")
-        elif url1.lower() == "/asset/getscriptstate.ashx":
-            self.send_response(200)
-            self.end_headers()
         elif url1.lower() == "/game/logout.aspx":
             self.send_response(200)
             self.end_headers()
@@ -39,7 +36,7 @@ class base(BaseHTTPRequestHandler):
             name = "unknown"+str(os.times())
         self.send_response(200)
         self.end_headers()
-        a = open("cache/dumps/"+name+".txt","wb")
+        a = open("cache/dumps/"+name+".dmp","wb")
         a.write(self.rfile.read(int(self.headers.get('content-length'))))
         a.close()
         self.wfile.write(b"done")

@@ -1,10 +1,16 @@
 local placeId, port, sleeptime, access, url, killID, deathID, timeout, autosaveInterval, locationID, groupBuild, machineAddress, gsmInterval, gsmUrl, maxPlayers, maxSlotsUpperLimit, maxSlotsLowerLimit, gsmAccess, injectScriptAssetID, servicesUrl, permissionsServiceUrl, apiKey, libraryRegistrationScriptAssetID = ...
-
-
+servicesUrl = "http://localhost"
+url = nil
+access = nil
+killID = nil
+deathID = nil
+local success,response = pcall(function()
 -- StartGame -- 
 pcall(function() game:GetService("ScriptContext"):AddStarterScript(injectScriptAssetID) end)
 game:GetService("RunService"):Run()
 
+
+game:SetMessage("Server started on port "..port)
 
 
 -- REQUIRES: StartGanmeSharedArgs.txt
@@ -143,34 +149,21 @@ settings().Diagnostics.LuaRamLimit = 0
 
 
 
-if placeId~=nil and killID~=nil and deathID~=nil and url~=nil then
+--[[if placeId~=nil and killID~=nil and deathID~=nil and url~=nil then
 	-- listen for the death of a Player
 	function createDeathMonitor(player)
 		-- we don't need to clean up old monitors or connections since the Character will be destroyed soon
-		if player.Character then
-			local humanoid = waitForChild(player.Character, "Humanoid")
-			humanoid.Died:connect(
-				function ()
-					onDied(player, humanoid)
-				end
-			)
-		end
+
 	end
 
 	-- listen to all Players' Characters
 	game:GetService("Players").ChildAdded:connect(
 		function (player)
 			createDeathMonitor(player)
-			player.Changed:connect(
-				function (property)
-					if property=="Character" then
-						createDeathMonitor(player)
-					end
-				end
-			)
+
 		end
 	)
-end
+end]]
 
 game:GetService("Players").PlayerAdded:connect(function(player)
 	print("Player " .. player.userId .. " added")
@@ -179,6 +172,24 @@ game:GetService("Players").PlayerAdded:connect(function(player)
 		game:HttpGet(url .. "/Game/ClientPresence.ashx?action=connect&" .. access .. "&PlaceID=" .. placeId .. "&UserID=" .. player.userId)
 		game:HttpGet(url .. "/Game/PlaceVisit.ashx?UserID=" .. player.userId .. "&AssociatedPlaceID=" .. placeId .. "&" .. access)
 	end
+	player.Changed:connect(
+		function (property)
+			if property=="Character" then
+				if player.Character then
+					local char = player.Character
+					char["Left Arm"].BrickColor = BrickColor.new("Really black")
+					char["Right Arm"].BrickColor = BrickColor.new("Really black")
+					char["Left Leg"].BrickColor = BrickColor.new("Really black")
+					char["Right Leg"].BrickColor = BrickColor.new("Really black")
+					char["Torso"].BrickColor = BrickColor.new("Dark stone grey")
+					char["Head"].BrickColor = BrickColor.new("Institutional white")
+					local shirt = Instance.new("Shirt",char)
+					shirt.ShirtTemplate = "http://localhost/asset/?id=8561740"
+					local humanoid = waitForChild(player.Character, "Humanoid")
+				end
+			end
+		end
+	)
 end)
 
 
@@ -228,3 +239,7 @@ end
 ------------------------------END START GAME SHARED SCRIPT--------------------------
 
 
+end)
+if not success then
+	game:SetMessage(response)
+end

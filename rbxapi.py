@@ -25,6 +25,8 @@ def getAssetId(query):
     return ""
 def sendAssetHeaders(req,assetId):
     req.send_header("roblox-assetid", str(assetId))
+    req.send_header("Content-Transfer-Encoding", "Binary")
+    req.send_header("Content-disposition", "attachment; filename="+assetId);
     
 def asset(req,assetId):
     asset = getAssetId(assetId)
@@ -36,6 +38,27 @@ def asset(req,assetId):
         req.end_headers()   
         req.wfile.write(r.read())
         r.close()
+    elif os.path.isfile("assets/"+asset):
+        r = open("assets/"+asset, "rb")
+        req.send_response(200)
+        req.send_header("content-type", "binary/octet-stream")
+        sendAssetHeaders(req,asset)
+        req.end_headers()   
+        req.wfile.write(r.read())
+        r.close()
+    elif os.path.isfile("assets/"+asset+".lua"):
+        r = open("assets/"+asset+".lua", "rb")
+        req.send_response(200)
+        req.send_header("content-type", "binary/octet-stream")
+        content = r.read()
+        r.close()
+        sign = crypto.sign(pkey, content, "sha1") 
+        content = b"%"+base64.b64encode(sign)+b"%"+content
+        if config["DEFAULT"]['old-style-hash'] == "no":
+            content = b'--rbxsig'+content
+        sendAssetHeaders(req,asset)
+        req.end_headers()   
+        req.wfile.write(content)
     else:
         headers = {
             "User-Agent": req.headers["User-Agent"]

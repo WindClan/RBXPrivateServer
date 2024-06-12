@@ -11,7 +11,7 @@ local function createCharacter(plr)
 	char["Right Arm"].BrickColor = BrickColor.new("Really black")
 	char["Left Leg"].BrickColor = BrickColor.new("Really black")
 	char["Right Leg"].BrickColor = BrickColor.new("Really black")
-	char["Torso"].BrickColor = BrickColor.new("Really black")
+	char["Torso"].BrickColor = BrickColor.new("Dark stone grey")
 	char["Head"].BrickColor = BrickColor.new("Industrial white")
 	local shirt = Instance.new("Shirt",char)
 	shirt.ShirtTemplate = url.."/asset?id=8561740"
