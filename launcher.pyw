@@ -43,7 +43,7 @@ def solo():
     def start():
         if selectedMap != None:
             frame; frame.destroy()
-            runClient('-script "loadfile(\'http://localhost/game/visit.ashx\')('+str(userId)+')" "'+selectedMap.replace("/","\\")+'"')
+            runClient('-script "loadfile(\'http://localhost/game/visit.ashx\')()" "'+selectedMap.replace("/","\\")+'"')
     frame = tk.Tk() 
     frame.title("RBXPrivateServer - Play solo") 
     frame.geometry('400x200')

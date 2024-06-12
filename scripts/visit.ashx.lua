@@ -6,6 +6,7 @@ function loadChar(a)
 	if not a then
 		wait(5)
 	end
+	plr.CharacterAppearance = "http://localhost/Asset/CharacterFetch.ashx"
 	plr:LoadCharacter()
 	plr.Character.Humanoid.Died:connect(loadChar)
 	local char = plr.Character
