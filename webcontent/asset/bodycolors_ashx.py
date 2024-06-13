@@ -40,6 +40,14 @@ type3 = {
     "[RLEG]": b"26",
     "[TORSO]": b"27",
 }
+type4 = {
+    "[HEAD]": b"194",
+    "[LARM]": b"194",
+    "[RARM]": b"194",
+    "[LLEG]": b"194",
+    "[RLEG]": b"194",
+    "[TORSO]": b"199",
+}
 
 def serveGet(req,name,config):
     query = parse_qs(name.query)
@@ -54,6 +62,8 @@ def serveGet(req,name,config):
             selType = type2
         elif query["type"] == "3":
             selType = type3
+        elif query["type"] == "4":
+            selType = type4
         else:
             selType = type1
         req.send_response(200)

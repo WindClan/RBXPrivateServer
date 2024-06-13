@@ -8,7 +8,8 @@ characters = [
     "http://localhost/Asset/BodyColors.ashx?type=3",
 ]
 def serveGet(req,name,config):
-    char = characters[randint(0,len(characters)-1)]
+    #char = characters[randint(0,len(characters)-1)]
+    char = "http://localhost/Asset/BodyColors.ashx?type=4"
     req.send_response(200)
     req.end_headers()
     req.wfile.write(char.encode("cp1252"))
