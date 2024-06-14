@@ -1,6 +1,6 @@
 # RBXPrivateServer
 
-Private server software, requires a bit of setup
+Tool to host and play private servers, requires a bit of setup
 
 ## How to use
 
@@ -10,7 +10,7 @@ Private server software, requires a bit of setup
 4. Drag `RobloxApp.exe` onto `patchclient.py` and read the instructions
 5. Place the client in the `client` folder in the program folder
 6. Install dependencies for the main program
-7. Run the launcher
+7. Run the launcher (`launcher.py`)
 
 ## Fixing place file assets
 Open the rbxl in a text editor and replace all instances of `http://www.roblox.com/asset/?id=` to `http://localhost/asset/?id=`
