@@ -7,8 +7,8 @@ class base(BaseHTTPRequestHandler):
         #print(self.headers)
         url = urlparse(self.path)
         url1 = url.path
-        if url1 == "/":
-            url1 = "/index.html"
+        if url1[len(url1)-1] == "/":
+            url1 = url1+"index.ashx"
         if url1.lower() == "/favicon.ico":
             rbxapi.dynamic(self,"../cache/favicon.ico")
         elif url1.lower() == "/game/logout.aspx":
@@ -16,7 +16,7 @@ class base(BaseHTTPRequestHandler):
             self.end_headers()
         elif os.path.exists("webcontent/"+url1.lower().split("&")[0].replace(".","_")+".py"):
             rbxapi.scriptedGet(self,url)
-        elif len(url1) > 5 and url1[0:6].lower() == "/asset":
+        elif len(url.path) > 5 and url.path[0:6].lower() == "/asset":
             assetId = url.query
             rbxapi.asset(self,assetId)
         elif len(url1) > 5 and url1[0:6].lower() == "/game/":

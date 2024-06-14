@@ -11,11 +11,48 @@ contents = a.read()
 
 #Scriptsigning hash
 a.seek(0)
+contents = a.read()
+a.seek(0)
 start = contents.find(b'BgIAA')
 if start != -1:
     a.seek(start)
     a.write(blob)
+#RCCService URL 1
+a.seek(0)
+contents = a.read()
+a.seek(0)
+start = contents.find(b'\x00http://roblox.com/RCCServiceSoap\x00')
+if start != -1:
+    a.seek(start)
+    a.write(b'\x00http://localhost/RCCServiceSoap\x00\x00')
+#RCCService URL 2
+a.seek(0)
+contents = a.read()
+a.seek(0)
+start = contents.find(b'\x00http://roblox.com/RCCServiceSoap12\x00')
+if start != -1:
+    a.seek(start)
+    a.write(b'\x00http://localhost/RCCServiceSoap12\x00\x00')
+#Analytics URL
+a.seek(0)
+contents = a.read()
+a.seek(0)
+start = contents.find(b'\x00http://test.public.ecs.roblox.com/\x00')
+if start != -1:
+    a.seek(start)
+    a.write(b'\x00http://localhost/\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00')
+
+#Misc instance of roblox.com
+a.seek(0)
+contents = a.read()
+a.seek(0)
+start = contents.find(b'\x00http://roblox.com/\x00')
+if start != -1:
+    a.seek(start)
+    a.write(b'\x00http://localhost/\x00\x00')
 #Trustcheck URL 1 
+a.seek(0)
+contents = a.read()
 a.seek(0)
 start = contents.find(b'\x00roblox.com\x00')
 if start != -1:
@@ -23,11 +60,15 @@ if start != -1:
     a.write(b'\x00localhost\x00\x00')
 #Trustcheck URL 2
 a.seek(0)
+contents = a.read()
+a.seek(0)
 start = contents.find(b'\x00roblox.com/\x00')
 if start != -1:
     a.seek(start)
     a.write(b'\x00localhost/\x00\x00')
 #Misc instance of URL
+a.seek(0)
+contents = a.read()
 a.seek(0)
 start = contents.find(b'\x2Eroblox.com\x00')
 if start != -1:
@@ -35,11 +76,15 @@ if start != -1:
     a.write(b'\x2Elocalhost\x00\x00')
 #Asset URL 1
 a.seek(0)
+contents = a.read()
+a.seek(0)
 start = contents.find(b'http://www.roblox.com/asset?id=%d')
 if start != -1:
     a.seek(start)
     a.write(b'http://localhost/asset/?id=%d\x00\x00\x00\x00')
 #Asset URL 2
+a.seek(0)
+contents = a.read()
 a.seek(0)
 start = contents.find(b'http://www.roblox.com/asset/?id=')
 if start != -1:
@@ -47,11 +92,15 @@ if start != -1:
     a.write(b'http://localhost/asset/?id=\x00\x00\x00\x00\x00')
 #Asset URL 3
 a.seek(0)
+contents = a.read()
+a.seek(0)
 start = contents.find(b'http://www.roblox.com/asset?id=')
 if start != -1:
     a.seek(start)
     a.write(b'http://localhost/asset?id=\x00\x00\x00\x00\x00')
 #Asset URL 4
+a.seek(0)
+contents = a.read()
 a.seek(0)
 start = contents.find(b'\x00roblox.com//asset/\x00')
 if start != -1:
@@ -59,17 +108,28 @@ if start != -1:
     a.write(b'\x00localhost//asset/\x00\x00')
 #Asset URL 5
 a.seek(0)
+contents = a.read()
+a.seek(0)
 start = contents.find(b'\x00roblox.com/asset/\x00')
 if start != -1:
     a.seek(start)
     a.write(b'\x00localhost/asset/\x00\x00')
-#
-#API URL
+#API URL 1
+a.seek(0)
+contents = a.read()
 a.seek(0)
 start = contents.find(b'https://%sapi.roblox.com/%s/?apiKey=%s')
 if start != -1:
     a.seek(start)
     a.write(b'https://%sapi.localhost/%s/?apiKey=%s\x00')
+#API URL 2
+a.seek(0)
+contents = a.read()
+a.seek(0)
+start = contents.find(b'%s://%sapi.roblox.com/%s/?apiKey=%s')
+if start != -1:
+    a.seek(start)
+    a.write(b'%s://%sapi.localhost/%s/?apiKey=%s\x00')
 a.close()
 print("This does not patch some of the major issues")
 print("You also still need to edit AppSettings.xml")

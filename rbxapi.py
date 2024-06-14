@@ -107,8 +107,8 @@ def dynamic(req,name):
         req.end_headers()
 def scriptedGet(req,name):
     name1 = name.path.split("&")[0]
-    if name1 == "/":
-        name1 = "/index.html"
+    if name1[len(name1)-1] == "/":
+        name1 = name1+"index.ashx"
     module = "webcontent"+name1.replace(".","_").replace("/",".").lower()
     print(module)
     a = importlib.import_module(module)
