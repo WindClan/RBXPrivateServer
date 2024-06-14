@@ -17,8 +17,8 @@ Open the rbxl in a text editor and replace all instances of `http://www.roblox.c
 
 ## License
 
-All the code authored by me is under the MIT license
+All the code authored by me is under the MIT license.
 This includes all the python scripts.
 
-All but Visit.ashx was written by Roblox
-All rights to those belong to Roblox
+All but Visit.ashx was written by Roblox.
+All rights to those belong to Roblox.
