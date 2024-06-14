@@ -20,5 +20,5 @@ Open the rbxl in a text editor and replace all instances of `http://www.roblox.c
 All the code authored by me is under the MIT license.
 This includes all the python scripts.
 
-All of the lua except Visit.ashx was written by Roblox.
+All of the lua except visit.ashx.lua and corescripts.lua was written by Roblox.
 All rights to those belong to Roblox.
