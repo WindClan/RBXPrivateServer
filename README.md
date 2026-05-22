@@ -1,3 +1,8 @@
+# DON't USE THIS!!!! USE NOVETUS
+This was a half-assed rewrite of a program I originally made in 2022 when I was 12. Not only is nearly all of the code poorly rewritten, half of the API calls were broken ~mid 2025 when roblox locked all of their web APIs behind requiring a ROBLOSECURITY token.
+
+This program does not fix any of the RCE vulnerabilities that have been discovered in these versions of Roblox. You are on your own if you use this.
+
 # RBXPrivateServer
 
 Tool to host and play private servers, requires a bit of setup
